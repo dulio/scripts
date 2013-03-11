@@ -9,9 +9,9 @@
 	Python版本 >= 3.2 ( 暂时在3.2和3.3上测试过，可以使用 )
 
 ##配置文件weather.ini
-    *Section info:
+* Section info:
 	email_from 这是配置邮件发送者显示的邮箱地址
-	*Section emails:
+* Section emails:
 	格式为:
 	    [email1] = [cityid1]
 		[email2] = [cityid1],[cityid2]...
