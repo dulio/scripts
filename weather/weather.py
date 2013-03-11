@@ -3,13 +3,13 @@
 # Filename: weather.py
 
 #####################################
-#			Weather Report			#
-#				by duliodev.com		#
-# @desc: script to fetch data from	#
-# http://www.weather.com.cn, and 	#
-# send mails to users				#
-# @datetime: 2013-03-08				#
-# @author: dulio					#
+#          Weather Report           #
+#               by duliodev.com     #
+# @desc: script to fetch data from  #
+# http://www.weather.com.cn, and    #
+# send mails to users               #
+# @datetime: 2013-03-08             #
+# @author: dulio                    #
 #####################################
 
 import sys
