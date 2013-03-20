@@ -1,0 +1,3 @@
+#!/bin/bash
+export LC_CTYPE=zh_CN.UTF-8
+su WEB_USER -c "svn update --username SVN_USER --password SVN_PWD PROJECT_ROOT"
