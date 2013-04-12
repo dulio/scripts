@@ -1,0 +1,26 @@
+#!/bin/bash
+
+##############################
+# A script to update Firefox #
+##############################
+
+firefox_root='/opt/firefox'
+
+arch='linux-x86_64'
+
+if [ "$1" == "" ]
+then
+	echo No version is specified.
+	exit
+fi
+
+wget http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$1/$arch/en-US/firefox-$1.tar.bz2
+
+if [ -f "firefox-$1.tar.bz2" ]
+then
+	rm -rf $firefox_root
+	tar jxf firefox-$1.tar.bz2 -C /tmp
+	mv /tmp/firefox /opt/firefox
+else
+	echo There is no version of $1.
+fi
