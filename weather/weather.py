@@ -25,7 +25,7 @@ class weather:
 		self.rawData = f.read().decode('utf-8')
 
 def parseHTML( vars ):
-	weeks = ['星期一','星期二','星期三','星期四','星期五','星期六','星期天']
+	weeks = ['星期一','星期二','星期三','星期四','星期五','星期六','星期日']
 	
 	html = ''
 	week = weeks.index( vars['week'] )
@@ -40,9 +40,8 @@ def parseHTML( vars ):
 	<td>%s</td>
 	<td>%s</td>
 	<td>%s</td>
-	<td>%s</td>
 </tr>
-''' % ( weeks[week], day['temp'], day['weather'], day['wind'] )
+''' % ( weeks[week], day['temp'], day['weather'] )
 		week += 1
 		if week > 6: week = 0
 
@@ -93,7 +92,7 @@ if __name__ == '__main__':
 			# Theme weather data
 			html += parseHTML( data )
 		
-		email_title = '| %s | 天气预报 via duliodev.com' % ( ' | '.join(cities) )
+		email_title = ' %s | 天气预报 via duliodev.com' % ( ' | '.join(cities) )
 		# Send mails to each other
 		# print (html)
 		mail.send_mail( email_from, email, email_title, html )
