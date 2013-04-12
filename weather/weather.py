@@ -13,6 +13,7 @@
 #####################################
 
 import sys
+import os
 import urllib.request
 import json
 import mail
@@ -57,7 +58,7 @@ if __name__ == '__main__':
 	
 	# read configuration file
 	config = configparser.ConfigParser()
-	config.read('weather.ini')
+	config.read( os.path.abspath(os.path.dirname(__file__)) + '/weather.ini')
 	
 	email_from = config['info']['email_from']
 	email_title = ''
