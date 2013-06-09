@@ -19,46 +19,45 @@ import json
 import mail
 import configparser
 
-class weather:
-	rawData = None
-	def __init__(self, url):
-		f = urllib.request.urlopen(url)
-		self.rawData = f.read().decode('utf-8')
 
-def parseHTML( vars ):
-	weeks = ['星期一','星期二','星期三','星期四','星期五','星期六','星期日']
-	
+def parseHTML( city, vars ):
 	html = ''
-	week = weeks.index( vars['week'] )
 
-	style = '''<style>
+	style = '''
+<style>
+	div.city { border-bottom: 0px solid #000; padding: 0.5em }
+	div.nighttime { border-bottom: 1px solid #000; }
+	h2 { border-bottom: 3px solid #000; }
 </style>
 '''
 
 	days = ''
-	for day in vars['days']:
-		days += '''<tr>
-	<td>%s</td>
-	<td>%s</td>
-	<td>%s</td>
-</tr>
-''' % ( weeks[week], day['temp'], day['weather'] )
-		week += 1
-		if week > 6: week = 0
+	for day in vars:
+		if day['title'][-2:] == '夜间':
+			mark = 'nighttime'
+		else:
+			mark = 'daytime'
+		days += '''
+	<div class="day %s">
+		<h4>%s</h4>
+		<div>%s</div>
+	</div>
+''' % ( mark, day['title'], day['fcttext_metric'] )
 
 	html = '''
+%s
+<div class="city">
+	<h2>%s</h2>
 	%s
-	<table border="1px">
-		<caption>%s</caption>
-		%s
-	</table>''' % ( style, vars['city'], days )
+</div>
+	''' % ( style, city, days )
 	return html
 
 if __name__ == '__main__':
 	
 	# read configuration file
 	config = configparser.ConfigParser()
-	config.read( os.path.abspath(os.path.dirname(__file__)) + '/weather.ini')
+	config.read( './weather.ini' )
 	
 	email_from = config['info']['email_from']
 	email_title = ''
@@ -67,34 +66,25 @@ if __name__ == '__main__':
 		html = ''
 		for cityid in cityids.split(','):
 			''' Prepare weather data '''
-			w = weather('http://m.weather.com.cn/data/%s.html' % ( cityid.strip() ))
+			api_url = 'http://api.wunderground.com/api/63da66236434d599/forecast/lang:CN/q/%s.json'
+			f = urllib.request.urlopen( api_url % ( cityid.strip() ) )
+			w = f.read().decode('utf-8')
+			# debug data
 			# if no content, continue loop
 			if w == None: continue
 
-			raw = json.loads( w.rawData )
-			raw = raw['weatherinfo']
+			data = json.loads( w )
+			data = data['forecast']['txt_forecast']['forecastday']
+			#print(raw)
 			# free memory
 			del w
 			
-			# Process weather data
-			data = {}
-			data['city'] = raw['city']
-			cities.append( raw['city'] )
-			data['date'] = raw['date']
-			data['week'] = raw['week']
-			data['days'] = []
-			for i in range(1,7):
-				day = {}
-				day['temp'] = raw['temp' + str(i)]
-				day['weather'] = raw['weather' + str(i)]
-				day['wind'] = raw['wind' + str(i)]
-				data['days'].append(day)
-
 			# Theme weather data
-			html += parseHTML( data )
+			html += parseHTML( cityid.strip(), data )
+			cities.append( cityid )
 		
-		email_title = ' %s | 天气预报 via duliodev.com' % ( ' | '.join(cities) )
+		email_title = ' %s | Weather Report via mosrv.com' % ( ' | '.join(cities) )
 		# Send mails to each other
-		# print (html)
+		#print (html)
 		mail.send_mail( email_from, email, email_title, html )
-		print ('Mail have been sent to %s ( %s )' % ( email, ' | '.join(cities) ) )
+		print ('Mail have been sent to %s ( %s )' % ( email, ' | '.join( cities ) ) )
