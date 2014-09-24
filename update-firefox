@@ -2,7 +2,7 @@
 # A script to update Firefox #
 ##############################
 
-firefox_root='/usr/local/firefox'
+firefox_root='/opt/firefox'
 arch='linux-x86_64'
 
 # check paragram
